@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  visualcrossing2mqtt:
+    build: .
+    environment:
+      - "mqtt_name=visualcrossing"
+      - "mqtt_host=mosquitto"
+      - "mqtt_port=1883"
+      - "visualcrossing_apikey=<apikey>"
+      - "visualcrossing_location=<location>"
+    links:
+      - "mosquitto:mosquitto"
+
+  mosquitto:
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883"
