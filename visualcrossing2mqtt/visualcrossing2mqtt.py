@@ -7,7 +7,7 @@ from threading import Thread
 import requests
 
 from cfg_loader import retrieve_cfg
-from mqtthandler import mqtthandler
+from mqtthandler import MqttHandler
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -27,7 +27,7 @@ mqttport = int(retrieve_cfg(key='mqtt.port', default='1883'))
 REFRESH_TIME = 60 * 60  # 1 hour
 
 # Start MQTT handler
-client = mqtthandler(host=mqtthost, port=mqttport, name=name)  # connect to broker
+client = MqttHandler(host=mqtthost, port=mqttport, name=name)  # connect to broker
 
 
 def from_url():
@@ -101,11 +101,11 @@ def refresh():
 
     # refresh-function
 
-    client.publish_state(payload)
+    client.publish_status_json(payload)
     # logging.debug(json.dumps(payload, indent=4, sort_keys=True))
 
 
-client.register_callback(client.compose_topic('get'), refresh)
+client.register_refresh(func=refresh)
 
 client.add_sensor('temp', 'C', 'temp')
 client.add_sensor('feelslike', 'C', 'feelslike')
